@@ -14,26 +14,24 @@ describe "messages/new.html.erb" do
     render
     rendered.should have_selector("form",
       :method => "post",
-      :action => messages_path
+      :action => messages_path,
     ) do |form|
       form.should have_selector("input", :type => "submit")
     end
   end
 
-  # this should be failing right now!!!
   it "renders a text field for the message title" do
     message.stub(:title => "the title")
     render
     rendered.should have_selector("form") do |form|
       form.should have_selector("input",
-        :type => "submit",
+        :type => "text",
         :name => "message[title]",
         :value => "the title"
       )
     end
   end
 
-  # this should be failing right now!!!
   it "renders a text area for the message text" do
     message.stub(:text => "the message")
     render
@@ -44,5 +42,6 @@ describe "messages/new.html.erb" do
       )
     end
   end
+
 end
 
