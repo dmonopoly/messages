@@ -15,7 +15,7 @@ describe "messages/new.html.erb" do
     rendered.should have_selector("form",
       :method => "post",
       :action => messages_path,
-    ) do |form|
+    ) do |form| # note that capybara does not properly support this....
       form.should have_selector("input", :type => "submit")
     end
   end
@@ -23,7 +23,7 @@ describe "messages/new.html.erb" do
   it "renders a text field for the message title" do
     message.stub(:title => "the title")
     render
-    rendered.should have_selector("form") do |form|
+    rendered.should have_selector("form") do |form| # note that capybara does not properly support this....
       form.should have_selector("input",
         :type => "text",
         :name => "message[title]",
@@ -35,7 +35,7 @@ describe "messages/new.html.erb" do
   it "renders a text area for the message text" do
     message.stub(:text => "the message")
     render
-    rendered.should have_selector("form") do |form|
+    rendered.should have_selector("form") do |form| # note that capybara does not properly support this....
       form.should have_selector("textarea",
         :name => "message[text]",
         :content => "the message"
