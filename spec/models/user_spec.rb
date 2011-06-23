@@ -3,18 +3,58 @@ require 'spec_helper'
 describe User do
 
   describe "#send_message" do
+    before(:each) do
+      @zach = User.create! :subscription => Subscription.new
+      @david = User.create!
+    end
 
-    context "when the user is under their subscription limit" do
-      it "sends a message to another user" do
-        zach = User.create!
-        david = User.create!
-        msg = zach.send_message(
-          :recipient => david,
+    context "when the user is under his subscription limit" do
+      before(:each) do
+        @zach.subscription.stub(:can_send_message?).and_return true
+      end
+
+      it "creates a new message with the submitted attributes" do
+        msg = @zach.send_message(
+          :recipient => @david,
           :title => "Book Update",
-          :text => "Beta 11 includes great stuff!",
-          :recipient => david
+          :text => "Beta 11 includes great stuff!"
         )
-        david.received_messages.should == [msg]
+        msg.title.should == "Book Update"
+        msg.text.should == "Beta 11 includes great stuff!"
+      end
+
+      it "sends a message to another user" do
+        msg = @zach.send_message(
+          :recipient => @david,
+          :title => "Book Update",
+          :text => "Beta 11 includes great stuff!"
+        )
+        @david.received_messages.should == [msg]
+      end
+
+      it "adds the message to the sender's sent messages" do
+        msg = @zach.send_message(
+          :recipient => @david,
+          :title => "Book Update",
+          :text => "Beta 11 includes great stuff!"
+        )
+        @zach.sent_messages.should == [msg]
+      end
+    end
+
+    context "when the user is under his subscription limit" do
+      before(:each) do
+        @zach.subscription.stub(:can_send_message?).and_return false
+      end
+
+      it "does not create a message" do
+        lambda {
+          @zach.send_message(
+            :recipient => @david,
+            :title => "Book Update",
+            :text => "Beta 11 includes great stuff!"
+          )
+        }.should_not change(Message, :count)
       end
     end
 
