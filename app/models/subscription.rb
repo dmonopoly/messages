@@ -3,7 +3,6 @@ class Subscription < ActiveRecord::Base
 
   def can_send_message?
     if user.sent_messages.count < limit
-      puts "#{user.sent_messages.count} and #{limit}"
       true
     else
       false
